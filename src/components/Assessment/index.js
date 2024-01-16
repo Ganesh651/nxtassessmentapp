@@ -50,7 +50,7 @@ const Assessment = () => {
 
   const renderLoadingView = () => (
     <div className='loading-container'>
-      <ThreeDots color="#164687" height={30} width={30} />
+      <ThreeDots color="#164687" height={50} width={50} />
     </div>
   )
 
