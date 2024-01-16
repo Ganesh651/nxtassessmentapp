@@ -59,7 +59,7 @@ ol {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    padding: 20px;
+    padding: 10px;
     column-gap: 0;
     row-gap: 20px;
   }
