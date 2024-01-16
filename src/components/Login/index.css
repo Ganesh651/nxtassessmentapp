@@ -1,6 +1,5 @@
 * {
-  margin: 0;
-  padding: 0;
+  /* margin: 0; */
   box-sizing: border-box;
   position: relative;
 }
@@ -18,6 +17,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 30px;
 }
 
 .show-password-text {
@@ -118,4 +118,17 @@
   font-weight: 400;
   line-height: 16px;
   margin: 5px 0 0 0;
+}
+
+@media screen and (max-width: 475px) {
+  .login-section {
+    padding: 0;
+  }
+
+  .login-form {
+    background-color: transparent;
+    box-shadow: none;
+    width: 100%;
+    padding: 20px;
+  }
 }

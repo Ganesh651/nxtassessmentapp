@@ -3,7 +3,12 @@ import './index.css'
 
 const Notfound = () => {
   return (
-    <div>Notfound</div>
+    <div className='notfound'>
+      <div style={{ textAlign: "center" }}>
+        <h2>Page Notfound</h2>
+        <p style={{ color: "#64748B" }}>We are sorry, the page you requested could not be found</p>
+      </div>
+    </div>
   )
 }
 

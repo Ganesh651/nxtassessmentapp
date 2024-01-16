@@ -1,0 +1,64 @@
+.navbar {
+  background-color: var(--textColor);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* .app-logo-container {} */
+
+.website-logo {
+  width: 67px;
+  height: 30px;
+}
+
+.website-name {
+  color: #FFFFFF;
+  font-family: "Futura Md BT";
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0.2px;
+  margin: 2px 0;
+}
+
+.website-name-span {
+  font-weight: 400;
+}
+
+.logout-button {
+  background-color: transparent;
+  color: #F1F5F9;
+  border: 1px solid #F1F5F9;
+  border-radius: 5px;
+  height: 35px;
+  width: 70px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 475px) {
+  .navbar {
+    padding: 10px;
+  }
+
+  .website-logo {
+    width: 54px;
+    height: 27px;
+  }
+
+  .website-name {
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  .logout-button {
+    width: 60px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
