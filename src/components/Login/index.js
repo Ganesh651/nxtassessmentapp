@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showErrorMessage, setShowErrorMessage] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [errorMesssage, setErrorMessage] = useState("")
   const navigate = useNavigate()
 
@@ -31,17 +32,15 @@ const Login = () => {
       method: "POST",
       body: JSON.stringify(userDetails)
     }
-
+    setIsLoading(true)
     const response = await fetch(url, options)
     const data = await response.json()
-
-
+    setIsLoading(false)
     if (response.ok === true) {
       renderSuccesView(data.jwt_token)
     } else {
       renderFailureView(data.error_msg)
     }
-
   }
 
   const token = Cookies.get("jwt_token")
@@ -86,7 +85,7 @@ const Login = () => {
             htmlFor='showPassword'>Show Password</label>
         </div>
         <button type='submit' className='login-button'>
-          Login
+          {isLoading ? "Loading..." : "Login"}
         </button>
         {showErrorMessage && <p className='error-message'>{errorMesssage}</p>}
       </form>

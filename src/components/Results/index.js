@@ -1,9 +1,16 @@
 import React from 'react'
+import Header from '../Header'
 import './index.css'
 
 const Results = () => {
   return (
-    <div>Results</div>
+    <>
+      <Header />
+      <div className='result-section'>
+        <div> Results</div>
+      </div>
+    </>
+
   )
 }
 

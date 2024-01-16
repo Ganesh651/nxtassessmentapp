@@ -181,4 +181,16 @@
   .assessment-question-container {
     order: 1;
   }
+
+  .options-container {
+    width: 100%;
+  }
+
+  .text-question-button {
+    bottom: 0;
+  }
+}
+
+button {
+  cursor: pointer;
 }

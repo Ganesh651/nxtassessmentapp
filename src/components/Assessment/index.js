@@ -15,43 +15,53 @@ import './index.css'
 const questionNumsList = [
   {
     id: uuidv4(),
-    num: 1
+    num: 1,
+    queIndex: 0
   },
   {
     id: uuidv4(),
-    num: 2
+    num: 2,
+    queIndex: 1
   },
   {
     id: uuidv4(),
-    num: 3
+    num: 3,
+    queIndex: 2
   },
   {
     id: uuidv4(),
-    num: 4
+    num: 4,
+    queIndex: 3
   },
   {
     id: uuidv4(),
-    num: 5
+    num: 5,
+    queIndex: 4
   },
   {
     id: uuidv4(),
-    num: 6
+    num: 6,
+    queIndex: 5
   },
   {
     id: uuidv4(),
-    num: 7
+    num: 7,
+    queIndex: 6
   },
   {
     id: uuidv4(),
-    num: 8
+    num: 8,
+    queIndex: 7
   },
   {
     id: uuidv4(),
-    num: 9
+    num: 9,
+    queIndex: 8
   },
   {
     id: uuidv4(),
-    num: 10
+    num: 10,
+    queIndex: 9
   }
 ]
 
@@ -127,6 +137,10 @@ const Assessment = () => {
     </div>
   )
 
+  const changeQuestionNum = (queIndex) => {
+    setIndex(queIndex)
+  }
+
   const displayOptions = () => {
     switch (asseementQuetions[index].options_type) {
       case "DEFAULT":
@@ -177,7 +191,11 @@ const Assessment = () => {
     navigate("/results")
   }
 
-
+  if (minutes === 0 && seconds === 0) {
+    console.log(timerId)
+    clearInterval(timerId)
+    navigate("/results")
+  }
   const renderSuccessView = () => (
     <div className='assessment-container'>
       <div className='assessment-question-container'>
@@ -186,12 +204,13 @@ const Assessment = () => {
         <div className='options-container'>
           {displayOptions()}
         </div>
-        <button type='button'
-          className='text-question-button'
-          onClick={handdleNextQuestion}
-        >
-          Next Question
-        </button>
+        {index < asseementQuetions.length - 1 &&
+          <button type='button'
+            className='text-question-button'
+            onClick={handdleNextQuestion}
+          >
+            Next Question
+          </button>}
       </div>
       <div className='timer-and-next-question-container'>
         <div className='timer-container'>
@@ -220,7 +239,11 @@ const Assessment = () => {
             <h3 className='questions-heading'>Questions{`(${asseementQuetions.length})`}</h3>
             <div className='num-buttons-list'>
               {questionNumsList.map(number => (
-                <QuestionNumbers number={number} key={number.id} />
+                <QuestionNumbers
+                  number={number}
+                  key={number.id}
+                  changeQuestionNum={changeQuestionNum}
+                />
               ))}
             </div>
           </div>
