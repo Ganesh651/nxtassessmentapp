@@ -126,6 +126,15 @@
   justify-content: space-between;
 }
 
+.question {
+  color: #164687;
+  font-family: "Inter";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+}
+
 .submit-assessment-button {
   background-color: transparent;
   border: 1px solid #164687;
@@ -144,7 +153,23 @@
   align-items: center;
 }
 
+.options-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 87%;
+}
 
+.dropdown {
+  border: 2px solid #263868;
+  padding: 10px;
+  border-radius: 5px;
+  color: #323F4B;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+}
 
 
 @media screen and (max-width: 768px) {

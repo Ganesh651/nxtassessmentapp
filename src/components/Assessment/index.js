@@ -5,9 +5,11 @@ import Cookies from 'js-cookie'
 import Header from '../Header'
 import { ThreeDots } from 'react-loader-spinner'
 import DefaultOption from '../DefaultOption'
+import { useNavigate } from 'react-router-dom'
 import ImageOption from '../ImageOption'
 import DropdownOption from '../DropdownOption'
 import QuestionNumbers from '../QuestionNumbers'
+import { toast, ToastContainer } from 'react-toastify'
 import './index.css'
 
 const questionNumsList = [
@@ -64,8 +66,13 @@ const Assessment = () => {
   const [asseementQuetions, setAsseementQuetions] = useState([])
   const [apiStatus, setApiStatus] = useState(apiConstraints.initial)
   const [index, setIndex] = useState(0)
-  console.log(asseementQuetions)
+  const [minutes, setMinutes] = useState(10);
+  const [seconds, setSeconds] = useState(59);
+  const navigate = useNavigate()
+
   const token = Cookies.get("jwt_token")
+
+  let timerId = null;
 
   useEffect(() => {
     try {
@@ -89,6 +96,25 @@ const Assessment = () => {
 
       }
       getAssessmentQuestions()
+
+      timerId = setInterval(() => {
+        setSeconds((prevSeconds) => {
+          if (prevSeconds === 0) {
+            setMinutes((prevMinutes) => {
+              if (prevMinutes === 0) {
+                clearInterval(timerId);
+              }
+              return prevMinutes - 1;
+            });
+            return 59;
+          }
+          return prevSeconds - 1;
+        });
+      }, 1000);
+
+      return () => {
+        clearInterval(timerId);
+      };
     } catch (error) {
       console.log(error)
     }
@@ -103,7 +129,7 @@ const Assessment = () => {
 
   const displayOptions = () => {
     switch (asseementQuetions[index].options_type) {
-      case "DEAFULT":
+      case "DEFAULT":
         return (
           <>
             {
@@ -124,12 +150,16 @@ const Assessment = () => {
       case "SINGLE_SELECT":
         return (
           <>
-            {
-              asseementQuetions[index].options.map(option => (
-                <DropdownOption option={option} key={option.id} />
-              ))
-            }
-          </>)
+            <select className='dropdown'>
+              {
+                asseementQuetions[index].options.map(option => (
+                  <DropdownOption option={option} key={option.id} />
+                ))
+              }
+            </select>
+            <ToastContainer />
+          </>
+        )
       default:
         return null
     }
@@ -139,14 +169,23 @@ const Assessment = () => {
     if (index < asseementQuetions.length - 1) {
       setIndex(index + 1)
     }
+    return toast("First option is selected by default")
   }
+
+  const handdleAssessmentSubmition = () => {
+    clearInterval(timerId)
+    navigate("/results")
+  }
+
 
   const renderSuccessView = () => (
     <div className='assessment-container'>
       <div className='assessment-question-container'>
-        <span>{index + 1}. {asseementQuetions[index].question_text}</span>
+        <span className='question'>{index + 1}. {asseementQuetions[index].question_text}</span>
         <hr style={{ color: "#979797" }} />
-        {displayOptions()}
+        <div className='options-container'>
+          {displayOptions()}
+        </div>
         <button type='button'
           className='text-question-button'
           onClick={handdleNextQuestion}
@@ -157,7 +196,7 @@ const Assessment = () => {
       <div className='timer-and-next-question-container'>
         <div className='timer-container'>
           <span>Time Left</span>
-          <span>00:10:00</span>
+          <span>00:{minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}</span>
         </div>
         <div className='timer-bottom-section'>
           <div className='answered-unanswered-container'>
@@ -185,7 +224,10 @@ const Assessment = () => {
               ))}
             </div>
           </div>
-          <button type='button' className='submit-assessment-button'>
+          <button type='button'
+            className='submit-assessment-button'
+            onClick={handdleAssessmentSubmition}
+          >
             Submit Assessment
           </button>
         </div>
@@ -208,9 +250,6 @@ const Assessment = () => {
         return null
     }
   }
-
-
-
 
   return (
     <>
