@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import Cookies from 'js-cookie'
 import Header from '../Header'
-import { ThreeDots } from 'react-loader-spinner'
+// import { ThreeDots } from 'react-loader-spinner'
 import DefaultOption from '../DefaultOption'
 import { useNavigate } from 'react-router-dom'
 import ImageOption from '../ImageOption'
@@ -133,7 +133,8 @@ const Assessment = () => {
 
   const renderLoadingView = () => (
     <div className='loading-container'>
-      <ThreeDots color="#164687" height={50} width={50} />
+      {/* <ThreeDots color="#164687" height={50} width={50} /> */}
+      <p>Loading...</p>
     </div>
   )
 
