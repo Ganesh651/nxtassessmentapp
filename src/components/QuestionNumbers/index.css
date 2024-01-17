@@ -9,3 +9,15 @@
   cursor: pointer;
   color: #64748B;
 }
+
+.active-button {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  height: 30px;
+  width: 30px;
+  border-radius: 3px;
+  background-color: #E2E8F0;
+  border: 1px solid #60A5FA;
+  cursor: pointer;
+  color: #64748B;
+}

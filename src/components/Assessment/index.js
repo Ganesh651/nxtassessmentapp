@@ -78,10 +78,11 @@ const Assessment = () => {
   const [index, setIndex] = useState(0)
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(59);
+  const [answeredCount, setAnsweredCount] = useState(0)
+  const [activeQuestion, setActiveQuestion] = useState(questionNumsList[0].id)
   const navigate = useNavigate()
-
   const token = Cookies.get("jwt_token")
-
+  console.log(index)
   let timerId = null;
 
   useEffect(() => {
@@ -103,8 +104,8 @@ const Assessment = () => {
         } else {
           setApiStatus(apiConstraints.failure)
         }
-
       }
+
       getAssessmentQuestions()
 
       timerId = setInterval(() => {
@@ -138,8 +139,43 @@ const Assessment = () => {
     </div>
   )
 
-  const changeQuestionNum = (queIndex) => {
+  const changeQuestionNum = (id, queIndex) => {
+    setActiveQuestion(id)
     setIndex(queIndex)
+  }
+
+  const checkDefaultOptionAnswer = (id, isCorrect) => {
+    asseementQuetions.forEach(eachItem => eachItem.options.forEach(each => {
+      if (each.id === id) {
+        if (each.is_correct === isCorrect) {
+          setAnsweredCount(answeredCount => answeredCount + 1)
+        }
+      }
+    }))
+    // handdleNextQuestion()
+  }
+
+  const checkIamgeOptionAnswer = (id, isCorrect) => {
+    asseementQuetions.forEach(eachItem => eachItem.options.forEach(each => {
+      if (each.id === id) {
+        if (each.is_correct === isCorrect) {
+          setAnsweredCount(answeredCount => answeredCount + 1)
+        }
+      }
+    }))
+    // handdleNextQuestion()
+  }
+
+  const checkDropdownOptionAnswer = (id, isCorrect) => {
+    console.log(id, isCorrect)
+    asseementQuetions.forEach(eachItem => eachItem.options.forEach(each => {
+      if (each.id === id) {
+        if (each.is_correct === isCorrect) {
+          setAnsweredCount(answeredCount => answeredCount + 1)
+        }
+      }
+    }))
+    // handdleNextQuestion()
   }
 
   const displayOptions = () => {
@@ -149,7 +185,11 @@ const Assessment = () => {
           <>
             {
               asseementQuetions[index].options.map(option => (
-                <DefaultOption option={option} key={option.id} />
+                <DefaultOption
+                  option={option}
+                  key={option.id}
+                  checkDefaultOptionAnswer={checkDefaultOptionAnswer}
+                />
               ))
             }
           </>)
@@ -158,7 +198,11 @@ const Assessment = () => {
           <>
             {
               asseementQuetions[index].options.map(option => (
-                <ImageOption option={option} key={option.id} />
+                <ImageOption
+                  option={option}
+                  key={option.id}
+                  checkIamgeOptionAnswer={checkIamgeOptionAnswer}
+                />
               ))
             }
           </>)
@@ -168,7 +212,11 @@ const Assessment = () => {
             <select className='dropdown'>
               {
                 asseementQuetions[index].options.map(option => (
-                  <DropdownOption option={option} key={option.id} />
+                  <DropdownOption
+                    option={option}
+                    key={option.id}
+                    checkDropdownOptionAnswer={checkDropdownOptionAnswer}
+                  />
                 ))
               }
             </select>
@@ -180,11 +228,17 @@ const Assessment = () => {
     }
   }
 
+  // const NextQuestion = (index, numIndex) => {
+  //   // setActiveQuestion(index)
+  //   // setIndex(numIndex)
+  //   console.log(index, numIndex)
+  // }
+
   const handdleNextQuestion = () => {
+
     if (index < asseementQuetions.length - 1) {
       setIndex(index + 1)
     }
-    return toast("First option is selected by default")
   }
 
   const handdleAssessmentSubmition = () => {
@@ -193,7 +247,6 @@ const Assessment = () => {
   }
 
   if (minutes === 0 && seconds === 0) {
-    console.log(timerId)
     clearInterval(timerId)
     navigate("/results")
   }
@@ -216,19 +269,19 @@ const Assessment = () => {
       <div className='timer-and-next-question-container'>
         <div className='timer-container'>
           <span>Time Left</span>
-          <span>00:{minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}</span>
+          <span>00:{minutes < 10 ? `0${minutes} ` : minutes}:{seconds < 10 ? `0${seconds} ` : seconds}</span>
         </div>
         <div className='timer-bottom-section'>
           <div className='answered-unanswered-container'>
             <div className='answered-container'>
               <div className='answered-count-container'>
-                <span className='answered-count'>{0}</span>
+                <span className='answered-count'>{answeredCount}</span>
               </div>
               <span className='answered-text'>Answered Questions</span>
             </div>
             <div className='answered-container'>
               <div className='unanswered-count-container'>
-                <span className='unanswered-count'>{0}</span>
+                <span className='unanswered-count'>{asseementQuetions.length - answeredCount}</span>
               </div>
               <span className='answered-text'>Unanswered Questions</span>
             </div>
@@ -244,6 +297,8 @@ const Assessment = () => {
                   number={number}
                   key={number.id}
                   changeQuestionNum={changeQuestionNum}
+                  currentQuestion={number.id === activeQuestion}
+                  handdleNextQuestion={handdleNextQuestion}
                 />
               ))}
             </div>

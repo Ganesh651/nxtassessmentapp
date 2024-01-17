@@ -2,12 +2,24 @@ import React from 'react'
 import './index.css'
 
 const QuestionNumbers = props => {
-  const { number, changeQuestionNum } = props
-  const { num, queIndex } = number
+  const {
+    number,
+    changeQuestionNum,
+    currentQuestion,
+  } = props
+  const { id, num, queIndex } = number
+
+  const qustionNumButton = () => {
+    changeQuestionNum(id, queIndex)
+  }
+
+  const activeQuestionClassName = currentQuestion ? "active-button" : "num-button"
+
+
   return <button
-    className='num-button'
+    className={activeQuestionClassName}
     type='button'
-    onClick={() => changeQuestionNum(queIndex)}
+    onClick={qustionNumButton}
   >{num}</button>
 }
 
