@@ -1,18 +1,23 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import TimerContext from '../../context/TimerContext'
 import Header from '../Header'
 import './index.css'
 
 const Results = () => {
-  const { correctAnswer, minutes, seconds } = useContext(TimerContext)
+  const { correctAnswer, minutes, seconds, timerStart, timerId } = useContext(TimerContext)
   const navigate = useNavigate()
-  console.log(minutes, seconds)
   const takenMinutes = 10 - minutes
   const takenSeconds = 59 - seconds
 
+  useEffect(() => {
+    clearInterval(timerId);
+  })
+
   const handdleReassessment = () => {
+    clearInterval(timerId);
     navigate("/assessment")
+    timerStart()
   }
   return (
     <>

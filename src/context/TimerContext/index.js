@@ -7,7 +7,9 @@ const TimerContext = createContext({
   correctAnswer: 0,
   changeMinutes: () => { },
   changeSeconds: () => { },
-  countCorrectAnswers: () => { }
+  countCorrectAnswers: () => { },
+  timerStart: () => { },
+  timerId: null
 })
 
 

@@ -6,13 +6,14 @@ import Notfound from '../Notfound'
 import Wrapper from '../Wrapper'
 import Results from '../Results'
 import TimerContext from '../../context/TimerContext'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 
 const AppRoutes = () => {
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(59);
   const [correctAnswer, setCorrectAnswer] = useState(0)
+  let { timerId } = useContext(TimerContext)
 
   const changeMinutes = mins => {
     setMinutes(mins)
@@ -25,11 +26,34 @@ const AppRoutes = () => {
   const countCorrectAnswers = count => {
     setCorrectAnswer(count)
   }
+
+  const timerStart = () => {
+    timerId = setInterval(() => {
+      changeSeconds((prevSeconds) => {
+        if (prevSeconds === 0) {
+          changeMinutes((prevMinutes) => {
+            if (prevMinutes === 0) {
+              clearInterval(timerId);
+            }
+            return prevMinutes - 1;
+          });
+          return 59;
+        }
+        return prevSeconds - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(timerId);
+    };
+  }
+
   return (
     <TimerContext.Provider value={{
       minutes, seconds,
       correctAnswer, changeMinutes,
-      changeSeconds, countCorrectAnswers
+      changeSeconds, countCorrectAnswers,
+      timerStart, timerId
     }}>
       <Routes>
         <Route path="/login" element={<Login />} />

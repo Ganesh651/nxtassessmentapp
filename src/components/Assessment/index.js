@@ -80,10 +80,9 @@ const Assessment = () => {
   const [answeredCount, setAnsweredCount] = useState(0)
   const [activeQuestion, setActiveQuestion] = useState(questionNumsList[0].id)
   const navigate = useNavigate()
-  const { minutes, seconds, correctAnswer, changeMinutes,
-    changeSeconds, countCorrectAnswers } = useContext(TimerContext)
+  const { minutes, seconds, correctAnswer, countCorrectAnswers, timerId, timerStart } = useContext(TimerContext)
+
   const token = Cookies.get("jwt_token")
-  let timerId = null;
 
   useEffect(() => {
     try {
@@ -107,25 +106,8 @@ const Assessment = () => {
       }
 
       getAssessmentQuestions()
+      timerStart()
 
-      timerId = setInterval(() => {
-        changeSeconds((prevSeconds) => {
-          if (prevSeconds === 0) {
-            changeMinutes((prevMinutes) => {
-              if (prevMinutes === 0) {
-                clearInterval(timerId);
-              }
-              return prevMinutes - 1;
-            });
-            return 59;
-          }
-          return prevSeconds - 1;
-        });
-      }, 1000);
-
-      return () => {
-        clearInterval(timerId);
-      };
     } catch (error) {
       console.log(error)
     }
