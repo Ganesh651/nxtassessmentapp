@@ -19,7 +19,7 @@
   line-height: 25px;
 }
 
-@media screen {
+@media screen and (max-width: 768px) {
   .option-item {
     width: 100%;
     flex-direction: column;

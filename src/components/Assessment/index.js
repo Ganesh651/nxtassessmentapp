@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import Cookies from 'js-cookie'
 import Header from '../Header'
@@ -7,9 +7,10 @@ import Header from '../Header'
 import DefaultOption from '../DefaultOption'
 import { useNavigate } from 'react-router-dom'
 import ImageOption from '../ImageOption'
-import DropdownOption from '../DropdownOption'
+// import DropdownOption from '../DropdownOption'
 import QuestionNumbers from '../QuestionNumbers'
-import { toast, ToastContainer } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
+import TimerContext from '../../context/TimerContext'
 import './index.css'
 
 const questionNumsList = [
@@ -76,13 +77,12 @@ const Assessment = () => {
   const [asseementQuetions, setAsseementQuetions] = useState([])
   const [apiStatus, setApiStatus] = useState(apiConstraints.initial)
   const [index, setIndex] = useState(0)
-  const [minutes, setMinutes] = useState(10);
-  const [seconds, setSeconds] = useState(59);
   const [answeredCount, setAnsweredCount] = useState(0)
   const [activeQuestion, setActiveQuestion] = useState(questionNumsList[0].id)
   const navigate = useNavigate()
+  const { minutes, seconds, correctAnswer, changeMinutes,
+    changeSeconds, countCorrectAnswers } = useContext(TimerContext)
   const token = Cookies.get("jwt_token")
-  console.log(index)
   let timerId = null;
 
   useEffect(() => {
@@ -109,9 +109,9 @@ const Assessment = () => {
       getAssessmentQuestions()
 
       timerId = setInterval(() => {
-        setSeconds((prevSeconds) => {
+        changeSeconds((prevSeconds) => {
           if (prevSeconds === 0) {
-            setMinutes((prevMinutes) => {
+            changeMinutes((prevMinutes) => {
               if (prevMinutes === 0) {
                 clearInterval(timerId);
               }
@@ -134,8 +134,7 @@ const Assessment = () => {
 
   const renderLoadingView = () => (
     <div className='loading-container'>
-      {/* <ThreeDots color="#164687" height={50} width={50} /> */}
-      <p>Loading...</p>
+      <p style={{ fontWeight: "600" }}>Loading...</p>
     </div>
   )
 
@@ -145,111 +144,152 @@ const Assessment = () => {
   }
 
   const checkDefaultOptionAnswer = (id, isCorrect) => {
-    asseementQuetions.forEach(eachItem => eachItem.options.forEach(each => {
-      if (each.id === id) {
-        if (each.is_correct === isCorrect) {
-          setAnsweredCount(answeredCount => answeredCount + 1)
+    const currentQuestion = asseementQuetions[index];
+
+    if (!currentQuestion.answered) {
+      currentQuestion.options.forEach((each) => {
+        if (each.id === id) {
+          setAnsweredCount((prevCount) => prevCount + 1);
+        } else if ("true" === isCorrect) {
+          countCorrectAnswers(correctAnswer + 1)
         }
-      }
-    }))
-    // handdleNextQuestion()
-  }
+      });
+      setAsseementQuetions((prevQuestions) =>
+        prevQuestions.map((q, i) =>
+          i === index ? { ...q, answered: true } : q
+        )
+      );
+    }
+  };
 
   const checkIamgeOptionAnswer = (id, isCorrect) => {
-    asseementQuetions.forEach(eachItem => eachItem.options.forEach(each => {
-      if (each.id === id) {
-        if (each.is_correct === isCorrect) {
-          setAnsweredCount(answeredCount => answeredCount + 1)
-        }
-      }
-    }))
-    // handdleNextQuestion()
-  }
+    const currentQuestion = asseementQuetions[index];
 
-  const checkDropdownOptionAnswer = (id, isCorrect) => {
-    console.log(id, isCorrect)
-    asseementQuetions.forEach(eachItem => eachItem.options.forEach(each => {
-      if (each.id === id) {
-        if (each.is_correct === isCorrect) {
-          setAnsweredCount(answeredCount => answeredCount + 1)
+    if (!currentQuestion.answered) {
+      currentQuestion.options.forEach((each) => {
+        if (each.id === id) {
+          setAnsweredCount((prevCount) => prevCount + 1);
+        } else if ("true" === isCorrect) {
+          countCorrectAnswers(correctAnswer + 1)
         }
-      }
-    }))
-    // handdleNextQuestion()
-  }
-
-  const displayOptions = () => {
-    switch (asseementQuetions[index].options_type) {
-      case "DEFAULT":
-        return (
-          <>
-            {
-              asseementQuetions[index].options.map(option => (
-                <DefaultOption
-                  option={option}
-                  key={option.id}
-                  checkDefaultOptionAnswer={checkDefaultOptionAnswer}
-                />
-              ))
-            }
-          </>)
-      case "IMAGE":
-        return (
-          <>
-            {
-              asseementQuetions[index].options.map(option => (
-                <ImageOption
-                  option={option}
-                  key={option.id}
-                  checkIamgeOptionAnswer={checkIamgeOptionAnswer}
-                />
-              ))
-            }
-          </>)
-      case "SINGLE_SELECT":
-        return (
-          <>
-            <select className='dropdown'>
-              {
-                asseementQuetions[index].options.map(option => (
-                  <DropdownOption
-                    option={option}
-                    key={option.id}
-                    checkDropdownOptionAnswer={checkDropdownOptionAnswer}
-                  />
-                ))
-              }
-            </select>
-            <ToastContainer />
-          </>
+      });
+      setAsseementQuetions((prevQuestions) =>
+        prevQuestions.map((q, i) =>
+          i === index ? { ...q, answered: true } : q
         )
-      default:
-        return null
+      );
     }
-  }
+  };
 
-  // const NextQuestion = (index, numIndex) => {
-  //   // setActiveQuestion(index)
-  //   // setIndex(numIndex)
-  //   console.log(index, numIndex)
-  // }
+  const checkDropdownOptionAnswer = (id) => {
+    const currentQuestion = asseementQuetions[index];
+
+    if (!currentQuestion.answered) {
+      currentQuestion.options.forEach((each) => {
+        if (each.id === id) {
+          setAnsweredCount((prevCount) => prevCount + 1);
+        } else if ("true" === each.is_correct) {
+          countCorrectAnswers(correctAnswer + 1)
+        }
+      });
+      setAsseementQuetions((prevQuestions) =>
+        prevQuestions.map((q, i) =>
+          i === index ? { ...q, answered: true } : q
+        )
+      );
+    }
+  };
 
   const handdleNextQuestion = () => {
+    setAsseementQuetions((prevQuestions) =>
+      prevQuestions.map((q, i) => (i === index ? { ...q, answered: false } : q))
+    );
 
     if (index < asseementQuetions.length - 1) {
-      setIndex(index + 1)
+      setIndex((prevIndex) => prevIndex + 1);
+      setActiveQuestion(questionNumsList[index + 1].id);
     }
-  }
+  };
 
   const handdleAssessmentSubmition = () => {
-    clearInterval(timerId)
-    navigate("/results")
+    if (answeredCount < asseementQuetions.length) {
+      alert("Complete the assessment before submission")
+    } else {
+      console.log(timerId)
+      clearInterval(timerId)
+      navigate("/results")
+    }
   }
 
   if (minutes === 0 && seconds === 0) {
     clearInterval(timerId)
     navigate("/results")
   }
+
+  const rednerDefaultOptionView = () => (
+    <>
+      {
+        asseementQuetions[index].options.map(option => (
+          <DefaultOption
+            option={option}
+            key={option.id}
+            checkDefaultOptionAnswer={checkDefaultOptionAnswer}
+          />
+        ))
+      }
+    </>
+  )
+
+
+  const rednerImageOptionView = () => (
+    <>
+      {
+        asseementQuetions[index].options.map(option => (
+          <ImageOption
+            option={option}
+            key={option.id}
+            checkIamgeOptionAnswer={checkIamgeOptionAnswer}
+          />
+        ))
+      }
+    </>
+  )
+
+  const handleDropDownChange = (e) => {
+    checkDropdownOptionAnswer(e.target.value)
+  };
+
+
+  const rednerDropdownOptionView = () => (
+    <>
+      <select className='dropdown' onChange={handleDropDownChange}>
+        {asseementQuetions[index].options.map(option => (
+          <option
+            key={option.id}
+            value={option.id}
+          >
+            {option.text}
+          </option>
+        ))}
+      </select>
+      <ToastContainer />
+    </>
+  );
+
+
+  const displayOptions = () => {
+    switch (asseementQuetions[index].options_type) {
+      case "DEFAULT":
+        return rednerDefaultOptionView()
+      case "IMAGE":
+        return rednerImageOptionView()
+      case "SINGLE_SELECT":
+        return rednerDropdownOptionView()
+      default:
+        return null
+    }
+  }
+
   const renderSuccessView = () => (
     <div className='assessment-container'>
       <div className='assessment-question-container'>
