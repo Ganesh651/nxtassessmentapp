@@ -1,0 +1,67 @@
+.failure-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.failure {
+  width: 700px;
+  margin: auto;
+  text-align: center;
+}
+
+.failure-image {
+  width: 477px;
+  flex-shrink: 0;
+  ;
+}
+
+.failure-heading {
+  color: #334155;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 44px;
+}
+
+.failiure-description {
+  color: #64748B;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.retry-button {
+  border-radius: 4px;
+  background: #164687;
+  height: 35px;
+  width: 80px;
+  border: 0;
+  color: #fff;
+}
+
+@media screen and (max-width: 768px) {
+  .failure-container {
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  .failure {
+    width: 100%;
+  }
+
+  .failure-image {
+    width: 100%;
+  }
+
+  .failure-heading {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .failiure-description {
+    font-size: 14px;
+    line-height: 24px;
+  }
+}

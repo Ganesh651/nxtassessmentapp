@@ -172,7 +172,6 @@
   cursor: pointer;
 }
 
-
 @media screen and (max-width: 768px) {
   .assessment-container {
     grid-template-columns: 1fr;
@@ -189,6 +188,10 @@
 
   .text-question-button {
     bottom: 0;
+  }
+
+  .assessment-section {
+    padding: 15px;
   }
 }
 

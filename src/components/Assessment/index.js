@@ -11,6 +11,7 @@ import ImageOption from '../ImageOption'
 import QuestionNumbers from '../QuestionNumbers'
 import { ToastContainer } from 'react-toastify'
 import TimerContext from '../../context/TimerContext'
+import FailureView from '../FailureView'
 import './index.css'
 
 const questionNumsList = [
@@ -81,10 +82,9 @@ const Assessment = () => {
   const [activeQuestion, setActiveQuestion] = useState(questionNumsList[0].id)
   const navigate = useNavigate()
   const { minutes, seconds, correctAnswer, countCorrectAnswers, timerId, timerStart } = useContext(TimerContext)
-
   const token = Cookies.get("jwt_token")
 
-  useEffect(() => {
+  const getAssessmentQuestions = async () => {
     try {
       const url = `https://apis.ccbp.in/assess/questions`
       const options = {
@@ -93,24 +93,23 @@ const Assessment = () => {
           authorization: `Bearer ${token}`
         }
       }
-      const getAssessmentQuestions = async () => {
-        setApiStatus(apiConstraints.in_progress)
-        const response = await fetch(url, options)
-        const data = await response.json()
-        setApiStatus(apiConstraints.success)
-        if (data) {
-          setAsseementQuetions(data.questions)
-        } else {
-          setApiStatus(apiConstraints.failure)
-        }
+      setApiStatus(apiConstraints.in_progress)
+      const response = await fetch(url, options)
+      const data = await response.json()
+      setApiStatus(apiConstraints.success)
+      if (data) {
+        setAsseementQuetions(data.questions)
+      } else {
+        setApiStatus(apiConstraints.failure)
       }
-
-      getAssessmentQuestions()
-      timerStart()
-
     } catch (error) {
       console.log(error)
     }
+  }
+
+  useEffect(() => {
+    getAssessmentQuestions()
+    timerStart()
   }, [token])
 
 
@@ -291,7 +290,7 @@ const Assessment = () => {
       <div className='timer-and-next-question-container'>
         <div className='timer-container'>
           <span>Time Left</span>
-          <span>00:{minutes < 10 ? `0${minutes} ` : minutes}:{seconds < 10 ? `0${seconds} ` : seconds}</span>
+          <span>00:{minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}</span>
         </div>
         <div className='timer-bottom-section'>
           <div className='answered-unanswered-container'>
@@ -336,8 +335,7 @@ const Assessment = () => {
     </div>
   )
 
-  const renderfailureView = () => { }
-
+  const renderfailureView = () => <FailureView getAssessmentQuestions={getAssessmentQuestions} />
 
   const renderAssessmentView = () => {
     switch (apiStatus) {
