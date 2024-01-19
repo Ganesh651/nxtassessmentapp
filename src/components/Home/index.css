@@ -1,12 +1,12 @@
 .home-container {
   background-color: var(--background);
-  min-height: 100vh;
-  padding: 50px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  column-gap: 50px;
+  padding: 50px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 400px;
+  gap: 50px;
   z-index: 0;
+  min-height: 100vh;
 }
 
 .instructions-container {
@@ -56,12 +56,12 @@ ol {
 
 @media screen and (max-width: 768px) {
   .home-container {
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
+    grid-template-columns: 1fr;
     padding: 10px;
     column-gap: 0;
-    row-gap: 20px;
+    gap: 20px;
+    min-height: 100vh;
+    grid-template-rows: auto;
   }
 
   .instructions-container {

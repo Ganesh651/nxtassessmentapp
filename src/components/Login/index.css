@@ -123,6 +123,8 @@
 @media screen and (max-width: 475px) {
   .login-section {
     padding: 0;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .login-form {
